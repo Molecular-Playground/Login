@@ -7,30 +7,42 @@ var bodyParser = require('body-parser');
 var bcrypt = require('bcrypt-nodejs');
 var njwt = require('njwt');
 var fs = require('fs');
-var db = require('./lib/db');
+var db = require('./db.js');
 
 var app = express();
 
 //Non Synchronous call is on purpose. Config must be parse before we continue.
+/*
 var config = JSON.parse(fs.readFileSync('config.json','utf8'));
 var secret = config.secret;
 var signkey = config.signkey;
-
+*/
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 //Login post function goes here.
-app.post('/',funtion(req,res,next){
+app.post('/',function(req,res,next){
   var username = req.body.username;
-  var password = req.body.parser;
-  db.connect("SELECT * from users where username = $(username)",funtion(err,results){
+  var password = req.body.password;
+  console.log(username);
+  console.log(password);
+  var query = "SELECT password FROM users WHERE email = $1";
+  db.query({ text : query, values : [username]},function(err,results){
     if(err){
       console.error("error connecting to database");
       next(new Error('DB error'));
     } else{
-      bcrypt.compare(password,results.rows[0].password,function(err,success){
+      if(results.rows[0].password === password){
+        console.log("success");
+        res.send("login success!");
+      }
+      else{
+        res.send("login failure");
+      }
+      /*
+        bcrypt.compare(password,results.rows[0].password,function(err,success){
         if(err){
           console.error("bcrypt error");
           next(new Error('bcrpyt error'));
@@ -50,6 +62,7 @@ app.post('/',funtion(req,res,next){
           }
         }
       })
+      */
     }
   });
 });
