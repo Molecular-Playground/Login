@@ -17,6 +17,7 @@ var config = JSON.parse(fs.readFileSync('config.json','utf8'));
 var secret = config.secret;
 var signkey = config.signkey;
 */
+var signkey = "PLACEHOLDER";
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -28,20 +29,20 @@ app.post('/',function(req,res,next){
   var password = req.body.password;
   console.log(username);
   console.log(password);
-  var query = "SELECT password FROM users WHERE email = $1";
+  var query = "SELECT * FROM users WHERE email = $1";
   db.query({ text : query, values : [username]},function(err,results){
     if(err){
       console.error("error connecting to database");
       next(new Error('DB error'));
     } else{
-      if(results.rows[0].password === password){
+      /*if(results.rows[0].password === password){
         console.log("success");
         res.send("login success!");
       }
       else{
         res.send("login failure");
-      }
-      /*
+      }*/
+
         bcrypt.compare(password,results.rows[0].password,function(err,success){
         if(err){
           console.error("bcrypt error");
@@ -62,7 +63,7 @@ app.post('/',function(req,res,next){
           }
         }
       })
-      */
+
     }
   });
 });
