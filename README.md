@@ -7,7 +7,7 @@ All installation is done automatically through docker. If you do not have docker
 Before we begin, make sure you have the database running in a container. You can find instructions on how to do that [here](https://github.com/Molecular-Playground/databaes). From inside docker virtual machine, navigate to the top directory of this repository. Enter the following commands:
 ```
 docker build -t login .
-docker run -p 3001:3001 --link postgres:postgres login
-# where the left postgres is the name of your postgres container
+docker run -tiv (directory of your code):/src -p 3001:3001 --name login --link postgres:postgres login
 ```
-To test the login, run ```curl -d 'username=bruce@wayne.com&password=bruce' -u "bruce@wayne.com:bruce" "http://localhost:3001"```
+### To Restart
+To restart the container with new code, simply run ```docker restart login```
