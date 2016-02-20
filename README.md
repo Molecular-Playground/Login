@@ -10,4 +10,4 @@ docker build -t login .
 docker run -tiv (directory of your code):/src -p 3001:3001 --name login --link postgres:postgres login
 ```
 ### To Restart
-To restart the container with new code, simply run ```docker restart login```
+To restart the container with new code, simply run ```docker restart -t=0 login```
