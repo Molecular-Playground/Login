@@ -25,16 +25,21 @@ app.use(cookieParser());
 
 //Login post function goes here.
 app.post('/',function(req,res,next){
-  var username = req.body.username;
+  var email = req.body.email;
   var password = req.body.password;
-  console.log(username);
-  console.log(password);
   var query = "SELECT * FROM users WHERE email = $1";
-  db.query({ text : query, values : [username]},function(err,results){
+  db.query({ text : query, values : [email]},function(err,results){
     if(err){
       console.error("error connecting to database");
       next(new Error('DB error'));
     } else{
+      if(!(results.rows[0] && results.rows[0].email)){
+        res.send({
+          message: ("invalid email"),
+          error: new Error("invalid email")
+        });
+        return;
+      }
       bcrypt.compare(password,results.rows[0].password,function(err,success){
         if(err){
           console.error("bcrypt error");
@@ -44,19 +49,20 @@ app.post('/',function(req,res,next){
           if(success){
             var claims = {
               iss: "Molecular Playground URL",
-              sub: "$(results.rows[0].id)",
-              username: username,
-              admin: "$(results.rows[0].admin)"
+              sub: results.rows[0].id,
+              username: results.rows[0].username,
+              email: email,
+              admin: results.rows[0].admin
             };
             var jwt = njwt.create(claims,signkey);
-            var token = jwt.compact;
+            var token = jwt.compact();
             res.send({
               token: token
             });
           } else{
             res.send({
-              message: ("invalid username or password"),
-              error: new Error("invalid username or password")
+              message: ("invalid email or password"),
+              error: new Error("invalid email or password")
             });
           }
         }
