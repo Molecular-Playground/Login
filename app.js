@@ -35,18 +35,11 @@ app.post('/',function(req,res,next){
       console.error("error connecting to database");
       next(new Error('DB error'));
     } else{
-      /*if(results.rows[0].password === password){
-        console.log("success");
-        res.send("login success!");
-      }
-      else{
-        res.send("login failure");
-      }*/
-
-        bcrypt.compare(password,results.rows[0].password,function(err,success){
+      bcrypt.compare(password,results.rows[0].password,function(err,success){
         if(err){
           console.error("bcrypt error");
-          next(new Error('bcrpyt error'));
+          console.error(err);
+          next(err);
         } else{
           if(success){
             var claims = {
@@ -60,10 +53,14 @@ app.post('/',function(req,res,next){
             res.send({
               token: token
             });
+          } else{
+            res.send({
+              message: ("invalid username or password"),
+              error: new Error("invalid username or password")
+            });
           }
         }
-      })
-
+      });
     }
   });
 });
