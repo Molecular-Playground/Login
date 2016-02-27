@@ -40,12 +40,6 @@ app.post('/',function(req,res,next){
         });
         return;
       }
-      else if(!results.rows[0].validated){
-        res.send({
-          message: ("User is not validated"),
-          error: new Error("User is not validated")
-        });
-      }
       bcrypt.compare(password,results.rows[0].password,function(err,success){
         if(err){
           console.error("bcrypt error");
@@ -53,18 +47,25 @@ app.post('/',function(req,res,next){
           next(err);
         } else{
           if(success){
-            var claims = {
-              iss: "Molecular Playground URL",
-              sub: results.rows[0].id,
-              username: results.rows[0].username,
-              email: email,
-              admin: results.rows[0].admin
-            };
-            var jwt = njwt.create(claims,signkey);
-            var token = jwt.compact();
-            res.send({
-              token: token
-            });
+            if(!results.rows[0].validated){
+              res.send({
+                message: ("User is not validated"),
+                error: new Error("User is not validated")
+              });
+            } else{
+              var claims = {
+                iss: "Molecular Playground URL",
+                sub: results.rows[0].id,
+                username: results.rows[0].username,
+                email: email,
+                admin: results.rows[0].admin
+              };
+              var jwt = njwt.create(claims,signkey);
+              var token = jwt.compact();
+              res.send({
+                token: token
+              });
+            }
           } else{
             res.send({
               message: ("invalid email or password"),
