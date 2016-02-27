@@ -40,6 +40,12 @@ app.post('/',function(req,res,next){
         });
         return;
       }
+      else if(!results.rows[0].validated){
+        res.send({
+          message: ("User is not validated"),
+          error: new Error("User is not validated")
+        });
+      }
       bcrypt.compare(password,results.rows[0].password,function(err,success){
         if(err){
           console.error("bcrypt error");
