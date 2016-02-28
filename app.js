@@ -55,7 +55,7 @@ app.post('/',function(req,res,next){
             } else{
               var claims = {
                 iss: "Molecular Playground URL",
-                sub: results.rows[0].id,
+                sub: results.rows[0].uid,
                 username: results.rows[0].username,
                 email: email,
                 admin: results.rows[0].admin
