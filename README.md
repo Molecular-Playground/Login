@@ -4,20 +4,30 @@ A microservice for user authentication.
 All installation is done automatically through docker. If you do not have docker installed, install [here](https://docs.docker.com/engine/installation/).
 
 ### To Run (Production)
-The easiest way to run for production is to use the docker-compose file that can be found [here](google.com). It is possible however to run the container manually. Before we begin, make sure you have the database running in a container. You can find instructions on how to do that [here](https://github.com/Molecular-Playground/databaes). From inside docker virtual machine, navigate to the top directory of this repository. Enter the following commands:
+The easiest way to run for production is to use the docker-compose file that can be found [here](https://github.com/molecular-playground/molecular-playground). It is possible however to run the container manually. Before we begin, make sure you have the database running in a container. You can find instructions on how to do that [here](https://github.com/Molecular-Playground/databaes). From inside docker virtual machine, navigate to the top directory of this repository. Enter the following commands:
 ```
 docker build -t login .
-docker run -d --name login -p 3001:3001 --link postgres:postgres login
+docker run -d --name login -p 3000:3000 --link postgres:postgres login
 # where the left postgres is the name of your postgres container
 ```
 
-This will run your container 'detached'. To kill the container, type in ```docker kill login```.
+This will run your container 'detached'. Here are some useful commands to interact with a detached container:
+```
+# kill a container
+docker kill login
+
+# view output
+docker logs -f login
+
+# restart a container
+docker restart -t=0 login
+```
 
 ### To Run (Development)
 The easiest way to develop using the docker container is to mount your working directory as a volume. Before we begin, you will still need to make sure you have the database running in a container. You can find instructions on how to do that [here](https://github.com/Molecular-Playground/databaes). From inside docker virtual machine, navigate to the top directory of this repository. Enter the following commands:
 ```
 docker build -t login .
-docker run -i -t -v $PWD:/src -p 3001:3001 --link postgres:postgres login bash
+docker run -i -t -p 3000:3000 --link postgres:postgres -v $PWD:/src users apk add --update bash && bash
 # where the left postgres is the name of your postgres container
 # where $PWD is a variable to your current directory and may need changing if you are using a windows environment
 ```
