@@ -27,7 +27,7 @@ docker restart -t=0 login
 The easiest way to develop using the docker container is to mount your working directory as a volume. Before we begin, you will still need to make sure you have the database running in a container. You can find instructions on how to do that [here](https://github.com/Molecular-Playground/databaes). From inside docker virtual machine, navigate to the top directory of this repository. Enter the following commands:
 ```
 docker build -t login .
-docker run -i -t -p 3000:3000 --link postgres:postgres -v $PWD:/src login /bin/sh
+docker run --rm -i -t -p 3000:3000 --link postgres:postgres -v $PWD:/src login /bin/sh
 # where the left postgres is the name of your postgres container
 # where $PWD is a variable to your current directory and may need changing if you are using a windows environment
 ```
