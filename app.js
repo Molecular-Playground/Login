@@ -34,10 +34,9 @@ app.post('/',function(req,res,next){
       next(new Error('DB error'));
     } else{
       if(!(results.rows[0] && results.rows[0].email)){
-        res.send({
-          message: ("invalid email"),
-          error: new Error("invalid email")
-        });
+        var err = new Error("Invalid email or password");
+        err.status = 403;
+        next(err);
         return;
       }
       bcrypt.compare(password,results.rows[0].password,function(err,success){
@@ -48,10 +47,10 @@ app.post('/',function(req,res,next){
         } else{
           if(success){
             if(!results.rows[0].validated){
-              res.send({
-                message: ("User is not validated"),
-                error: new Error("User is not validated")
-              });
+              var err = new Error("User is not validated");
+              err.status = 401;
+              next(err);
+              return;
             } else{
               var claims = {
                 iss: "Molecular Playground URL",
@@ -67,10 +66,10 @@ app.post('/',function(req,res,next){
               });
             }
           } else{
-            res.send({
-              message: ("invalid email or password"),
-              error: new Error("invalid email or password")
-            });
+            var err = new Error("Invalid email or password");
+            err.status = 403;
+            next(err);
+            return;
           }
         }
       });
