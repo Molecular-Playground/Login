@@ -62,7 +62,8 @@ app.post('/',function(req,res,next){
               var jwt = njwt.create(claims,signkey);
               var token = jwt.compact();
               res.send({
-                token: token
+                token: token,
+                username: results.rows[0].username
               });
             }
           } else{
