@@ -52,18 +52,22 @@ app.post('/',function(req,res,next){
               next(err);
               return;
             } else{
-              var claims = {
-                iss: "Molecular Playground URL",
-                sub: results.rows[0].uid,
-                username: results.rows[0].username,
-                email: email,
-                admin: results.rows[0].admin
-              };
-              var jwt = njwt.create(claims,signkey);
-              var token = jwt.compact();
-              res.send({
-                token: token,
-                username: results.rows[0].username
+              var query = "SELECT * FROM admin WHERE uid = $1";
+              db.query({text:query, values: [results.rows[0].uid]}, function(err,admin){
+                var claims = {
+                  iss: "Molecular Playground URL",
+                  sub: results.rows[0].uid,
+                  username: results.rows[0].username,
+                  email: email,
+                  admin: admin.rows.length > 0
+                };
+                var jwt = njwt.create(claims,signkey);
+                var token = jwt.compact();
+                res.send({
+                  token: token,
+                  username: results.rows[0].username,
+                  admin: admin.rows.length > 0
+                });
               });
             }
           } else{
