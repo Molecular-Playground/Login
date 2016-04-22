@@ -1,6 +1,7 @@
 // import the node postres wrapper
 var pg = require('pg');
-var conString = "postgres://postgres:dankmemes@postgres/postgres";
+var POSTGRES_PASSWORD = process.env.POSTGRES_PASSWORD;
+var conString = "postgres://postgres:" + POSTGRES_PASSWORD + "@postgres/postgres";
 
 var query = function(queryStr, cb){
   pg.connect(conString, function(err, client, done) {

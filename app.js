@@ -12,12 +12,7 @@ var db = require('./db.js');
 var app = express();
 
 //Non Synchronous call is on purpose. Config must be parse before we continue.
-/*
-var config = JSON.parse(fs.readFileSync('config.json','utf8'));
-var secret = config.secret;
-var signkey = config.signkey;
-*/
-var signkey = "PLACEHOLDER";
+var SIGNING_KEY = process.env.SIGNING_KEY;
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -61,7 +56,7 @@ app.post('/',function(req,res,next){
                   email: email,
                   admin: admin.rows.length > 0
                 };
-                var jwt = njwt.create(claims,signkey);
+                var jwt = njwt.create(claims,SIGNING_KEY);
                 var token = jwt.compact();
                 res.send({
                   token: token,
